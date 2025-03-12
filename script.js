@@ -105,4 +105,4 @@ function endQuiz() {
     optionsContainer.innerHTML = "";
     timerElement.innerText = "";
     lightElement.style.backgroundColor = "#ccc"; // लाइट को सामान्य करें
-}
+                                                                          }
