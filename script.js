@@ -38,19 +38,16 @@ startButton.addEventListener("click", startQuiz);
 function startQuiz() {
     startButton.style.display = "none";  // स्टार्ट बटन हटाएं
     loadQuestion();
-    startTimer();
 }
 
-// **प्रश्न लोड करने का फ़ंक्शन**
+// **प्रश्न लोड करने का फ़ंक्शन (हर सवाल के लिए नया टाइमर)**
 function loadQuestion() {
     if (currentQuestionIndex < questions.length) {
         let questionData = questions[currentQuestionIndex];
         questionElement.innerText = questionData.question;
         
-        // पुराने ऑप्शन हटाएं
         optionsContainer.innerHTML = "";
 
-        // नए ऑप्शन जोड़ें
         questionData.options.forEach(option => {
             let button = document.createElement("button");
             button.innerText = option;
@@ -59,6 +56,8 @@ function loadQuestion() {
             optionsContainer.appendChild(button);
         });
 
+        // **हर नए सवाल के लिए टाइमर रीसेट करें**
+        resetTimer();
     } else {
         endQuiz();
     }
@@ -66,6 +65,7 @@ function loadQuestion() {
 
 // **उत्तर चेक करने का फ़ंक्शन**
 function checkAnswer(selectedOption) {
+    clearInterval(timer); // समय रोकें
     let correctAnswer = questions[currentQuestionIndex].answer;
 
     if (selectedOption === correctAnswer) {
@@ -80,15 +80,20 @@ function checkAnswer(selectedOption) {
     loadQuestion();
 }
 
-// **टाइमर शुरू करने का फ़ंक्शन**
-function startTimer() {
+// **हर सवाल के लिए नया 20 सेकंड का टाइमर**
+function resetTimer() {
+    clearInterval(timer);
+    timeLeft = 20;
+    timerElement.innerText = "समय: " + timeLeft + " सेकंड";
+
     timer = setInterval(() => {
         timeLeft--;
         timerElement.innerText = "समय: " + timeLeft + " सेकंड";
 
         if (timeLeft === 0) {
             clearInterval(timer);
-            endQuiz();
+            currentQuestionIndex++; // अगले सवाल पर जाएं
+            loadQuestion();
         }
     }, 1000);
 }
